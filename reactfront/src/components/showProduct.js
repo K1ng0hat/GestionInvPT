@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify'; // Importa toast
+import { toast } from 'react-toastify'; // Asegúrate de tener react-toastify instalado para notificaciones
 
 const endpoint = 'http://localhost:8000/api';
 
@@ -16,16 +16,6 @@ const ShowProduct = () => {
         try {
             const response = await axios.get(`${endpoint}/productos`);
             setProducts(response.data.products);
-
-            // Mostrar notificación para cada producto con stock bajo
-            response.data.products.forEach(product => {
-                if (product.stock < 10) { // Ajusta el umbral según tus necesidades
-                    toast.warn(`El stock del producto ${product.nombre} (${product.id}) es bajo`, {
-                        position: "bottom-right",
-                        autoClose: 5000,
-                    });
-                }
-            });
         } catch (error) {
             console.error("Error fetching products:", error);
         }
@@ -37,6 +27,18 @@ const ShowProduct = () => {
             getAllProducts();
         } catch (error) {
             console.error("Error deleting product:", error);
+        }
+    };
+
+    const handleSale = async (id) => {
+        try {
+            const quantity = 1; // Cantidad a reducir
+            const response = await axios.put(`${endpoint}/productos/${id}/reduce-stock`, { quantity });
+            toast.success('Stock actualizado con éxito');
+            getAllProducts(); // Actualiza la lista de productos
+        } catch (error) {
+            console.error('Error updating stock:', error);
+            toast.error('Error al actualizar el stock');
         }
     };
 
@@ -66,6 +68,7 @@ const ShowProduct = () => {
                             <td>
                                 <Link to={`/edit/${product.id}`} className='btn btn-primary'>Edit</Link>
                                 <button onClick={() => deleteProduct(product.id)} className='btn btn-danger'>Delete</button>
+                                <button onClick={() => handleSale(product.id)} className='btn btn-warning'>Vender</button>
                             </td>
                         </tr>
                     ))}
