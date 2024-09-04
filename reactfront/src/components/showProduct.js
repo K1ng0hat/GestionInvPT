@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify'; // Importa toast
 
 const endpoint = 'http://localhost:8000/api';
 
@@ -14,7 +15,17 @@ const ShowProduct = () => {
     const getAllProducts = async () => {
         try {
             const response = await axios.get(`${endpoint}/productos`);
-            setProducts(response.data.products); 
+            setProducts(response.data.products);
+
+            // Mostrar notificación para cada producto con stock bajo
+            response.data.products.forEach(product => {
+                if (product.stock < 10) { // Ajusta el umbral según tus necesidades
+                    toast.warn(`El stock del producto ${product.nombre} (${product.id}) es bajo`, {
+                        position: "bottom-right",
+                        autoClose: 5000,
+                    });
+                }
+            });
         } catch (error) {
             console.error("Error fetching products:", error);
         }
@@ -55,7 +66,6 @@ const ShowProduct = () => {
                             <td>
                                 <Link to={`/edit/${product.id}`} className='btn btn-primary'>Edit</Link>
                                 <button onClick={() => deleteProduct(product.id)} className='btn btn-danger'>Delete</button>
-                                
                             </td>
                         </tr>
                     ))}
