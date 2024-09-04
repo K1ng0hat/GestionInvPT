@@ -129,11 +129,7 @@ class ProductController extends Controller
     $product->stock -= $quantity;
     $product->save();
 
-    // Enviar la notificación de bajo producto
-    $response = Http::post('http://example.com/notify', [
-        'product_id' => $product->id,
-        'new_stock' => $product->stock,
-    ]);
+
 
     return response()->json($product);
 }
