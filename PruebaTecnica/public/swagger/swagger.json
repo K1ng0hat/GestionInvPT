@@ -3,7 +3,7 @@
     "info": {
       "title": "Product API",
       "version": "1.0.0",
-      "description": "API for managing products, including stock management and notifications."
+      "description": "API para el manejo de productos, incluyendo el manejo de stock, notificaciones, y autenticacion basada en JWT."
     },
     "servers": [
       {
@@ -11,12 +11,118 @@
       }
     ],
     "paths": {
-      "/productos": {
-        "get": {
-          "summary": "Get all products",
+      "/auth/login": {
+        "post": {
+          "summary": "Usuario se logea con JWT",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "responses": {
             "200": {
-              "description": "A list of products",
+              "description": "JWT generado correctamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "token": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Credenciales invalidas",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/auth/register": {
+        "post": {
+          "summary": "Registra un nuevo usuario",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Usuario registrado correctamente"
+            },
+            "400": {
+              "description": "Error de validacion",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/productos": {
+        "get": {
+          "summary": "Get products",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Lista los productos",
               "content": {
                 "application/json": {
                   "schema": {
@@ -39,7 +145,12 @@
           }
         },
         "post": {
-          "summary": "Create a new product",
+          "summary": "Crear un producto",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
           "requestBody": {
             "required": true,
             "content": {
@@ -52,7 +163,7 @@
           },
           "responses": {
             "201": {
-              "description": "Product created successfully",
+              "description": "Producto creado correctamente",
               "content": {
                 "application/json": {
                   "schema": {
@@ -70,50 +181,22 @@
               }
             },
             "400": {
-              "description": "Validation error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      },
-                      "errors": {
-                        "type": "object"
-                      },
-                      "status": {
-                        "type": "integer"
-                      }
-                    }
-                  }
-                }
-              }
+              "description": "Error de validacion"
             },
             "500": {
-              "description": "Product not created",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      },
-                      "status": {
-                        "type": "integer"
-                      }
-                    }
-                  }
-                }
-              }
+              "description": "Producto no creado"
             }
           }
         }
       },
       "/productos/{id}": {
         "get": {
-          "summary": "Get a product by ID",
+          "summary": "Get product by ID",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
           "parameters": [
             {
               "name": "id",
@@ -126,7 +209,7 @@
           ],
           "responses": {
             "200": {
-              "description": "Product details",
+              "description": "Detalle del producto",
               "content": {
                 "application/json": {
                   "schema": {
@@ -136,27 +219,17 @@
               }
             },
             "404": {
-              "description": "Product not found",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      },
-                      "status": {
-                        "type": "integer"
-                      }
-                    }
-                  }
-                }
-              }
+              "description": "Producto no encontrado"
             }
           }
         },
         "put": {
-          "summary": "Update a product by ID",
+          "summary": "Update product by ID",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
           "parameters": [
             {
               "name": "id",
@@ -179,45 +252,20 @@
           },
           "responses": {
             "200": {
-              "description": "Product updated successfully",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "product": {
-                        "$ref": "#/components/schemas/Product"
-                      },
-                      "status": {
-                        "type": "integer"
-                      }
-                    }
-                  }
-                }
-              }
+              "description": "Producto actualizado correctamente"
             },
             "404": {
-              "description": "Product not found",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      },
-                      "status": {
-                        "type": "integer"
-                      }
-                    }
-                  }
-                }
-              }
+              "description": "Producto no encontrado"
             }
           }
         },
         "delete": {
-          "summary": "Delete a product by ID",
+          "summary": "Delete product by ID",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
           "parameters": [
             {
               "name": "id",
@@ -230,47 +278,22 @@
           ],
           "responses": {
             "200": {
-              "description": "Product deleted successfully",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      },
-                      "status": {
-                        "type": "integer"
-                      }
-                    }
-                  }
-                }
-              }
+              "description": "Producto eliminado correctamente"
             },
             "404": {
-              "description": "Product not found",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      },
-                      "status": {
-                        "type": "integer"
-                      }
-                    }
-                  }
-                }
-              }
+              "description": "Product no encontrado"
             }
           }
         }
       },
       "/productos/{id}/reduce-stock": {
         "put": {
-          "summary": "Reduce stock of a product",
+          "summary": "Reduce el stock de un producto",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
           "parameters": [
             {
               "name": "id",
@@ -298,29 +321,10 @@
           },
           "responses": {
             "200": {
-              "description": "Stock reduced successfully",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Product"
-                  }
-                }
-              }
+              "description": "Stock reducido"
             },
             "400": {
-              "description": "Insufficient stock",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
+              "description": "Stock insuficiente"
             }
           }
         }
@@ -348,6 +352,13 @@
               "type": "integer"
             }
           }
+        }
+      },
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
         }
       }
     }
