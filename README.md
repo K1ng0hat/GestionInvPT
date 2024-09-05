@@ -45,3 +45,6 @@ El proyecto incorpora notificaciones en tiempo real para alertar al administrado
 
 8. Estructura del proyecto
 El proyecto utiliza una sola rama ya que es un proyecto individual. Hubo un inconveniente con la carpeta reactFront, que contenía un archivo .git no visible, lo que generó un conflicto al subir el repositorio a GitHub. Este problema ha sido resuelto en el último commit.
+
+
+Las claves API presentes en este repositorio son solo para propósitos de evaluación técnica y no son claves sensibles.
