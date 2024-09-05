@@ -1,18 +1,47 @@
-- Para la introduccion al archivo descargar o directamente hacer un fork para introducir las carpetas en su dispositivo local.
+Este proyecto es un sistema de gestión de inventario desarrollado utilizando Laravel para el backend y React para el frontend. El objetivo principal es manejar productos en una base de datos, permitiendo funcionalidades CRUD (Crear, Leer, Actualizar, Eliminar) con autenticación basada en JWT y notificaciones en tiempo real para gestionar el stock. El sistema incluye diferentes vistas y permisos tanto para usuarios como administradores, y maneja notificaciones cuando el stock de un producto es insuficiente.
 
+Requisitos previos
+Antes de comenzar, asegúrate de tener instalados los siguientes programas y herramientas:
 
-- Para migrar la base de dato realizada en MySql, tiene que escribir php artisan migrate directamente en la consola sobre la carpeta en la que se encuentra realizada el backend, previamente habiendo creado la base de datos que se denota en el NAME_DATABASE Del archivo
-.env
+PHP (8.x o superior)
+Composer
+Node.js
+MySQL
+Git
+Un cliente HTTP como Thunder Client o Postman para probar las rutas de la API.
+Instalación
+1. Clonar el repositorio
+Puedes clonar este repositorio o realizar un fork para trabajar con tu propia copia. Después de clonar, debes asegurarte de estar ubicado en la carpeta raíz del proyecto.
 
--Para ingresar a la vista de backend y revisar las rutas RESTful puede utilizar Thunder Client como extension y luego de eso colocar localhost:8000/api/productos (creadas las rutas con anterioridad en el archivo de /routes/api.
--Para interactuar con el CRUD en react, cabe mencionar que en la interfaz donde se encuentra la carpeta de react necesita colocar "npm start" para inicializar el front y "php artisan serve" para inicializar el backend.
--La libreria para las notificaciones toasted-react en este proyecto me aparecio con un error decrepated, por lo tanto hay que actualizarla === commits a continuacion despues de la generación de este README.md
+2. Configuración del backend (Laravel)
+Ubícate dentro de la carpeta donde se encuentra el backend desarrollado en Laravel.
 
-La documentación se encuentra en SWAGGER.json y para visualizarla puede ingresar a Swagger Editor, falta agregarla al proyecto por lo tanto ya sera agregada a este mismo en el proximo commit /// SE ENCUENTRA YA REALIZADA EN public/swagger/swagger.json
+2.1. Configuración del archivo .env
+Es necesario configurar correctamente el archivo de entorno .env para enlazar tu base de datos. Si no tienes un archivo .env, puedes copiar el archivo .env.example, renombrarlo a .env, y luego actualizar los valores según tu entorno local. Asegúrate de definir las credenciales de conexión a la base de datos y el nombre de la base que se especifica en DB_DATABASE.
 
-Se trabajo sobre una sola rama debido a que es un proyecto individual pero se presento un problema al momento de hacer la subida de el repositorio debido a que la carpeta de "reactFront" contenía una carpeta .git que no se podia visualizar.
+2.2. Migraciones de la base de datos
+Una vez que hayas configurado el archivo .env y creado la base de datos en MySQL, puedes ejecutar las migraciones para crear las tablas necesarias. Esto se logra utilizando el comando php artisan migrate desde la consola, estando ubicado en la carpeta del backend.
 
-Actualizacion: la notificación despues en la vista de administrador una vez el stock esta en 0 no permite reducir, en la vista de usuario no permite comprar.
+3. Iniciar el backend
+Para iniciar el servidor de desarrollo de Laravel, ejecuta el comando php artisan serve. Esto habilitará el backend en la dirección http://localhost:8000.
 
+4. Configuración del frontend (React)
+El frontend está desarrollado utilizando React. Debes ubicarte en la carpeta donde se encuentra la interfaz de usuario.
 
+4.1. Instalación de dependencias
+Asegúrate de instalar todas las dependencias de React ejecutando npm install en la carpeta del frontend.
 
+4.2. Iniciar el frontend
+Una vez instaladas las dependencias, puedes iniciar el servidor de desarrollo con el comando npm start. Esto levantará el frontend en el navegador, generalmente en http://localhost:3000.
+
+5. Uso de Thunder Client para probar las rutas
+Para probar las rutas RESTful, puedes utilizar Thunder Client, una extensión para Visual Studio Code que permite enviar solicitudes HTTP a la API. Simplemente abre Thunder Client e ingresa http://localhost:8000/api/productos para acceder a la lista de productos (suponiendo que el backend esté corriendo y la ruta esté correctamente definida en el archivo /routes/api.php).
+
+6. Documentación de la API con Swagger
+La documentación de la API ha sido generada utilizando Swagger. Para visualizar esta documentación, puedes abrir el archivo public/swagger/swagger.json en Swagger Editor. Aquí encontrarás todas las rutas definidas, incluyendo autenticación JWT y las operaciones CRUD sobre productos. Esta documentación se agregará en el próximo commit al proyecto.
+
+7. Notificaciones en el sistema
+El proyecto incorpora notificaciones en tiempo real para alertar al administrador cuando el stock de un producto está en 0. También se impide la reducción de stock a 0 o menos desde la vista de administración y se evita la compra de productos sin stock desde la vista de usuario.
+
+8. Estructura del proyecto
+El proyecto utiliza una sola rama ya que es un proyecto individual. Hubo un inconveniente con la carpeta reactFront, que contenía un archivo .git no visible, lo que generó un conflicto al subir el repositorio a GitHub. Este problema ha sido resuelto en el último commit.
