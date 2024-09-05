@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify'; // Asegúrate de tener react-toastify instalado para notificaciones
+import { ToastContainer, toast } from 'react-toastify'; // Importa las herramientas de notificación
+import 'react-toastify/dist/ReactToastify.css'; // Estilo de las notificaciones
 
 const endpoint = 'http://localhost:8000/api';
 
@@ -30,15 +31,20 @@ const ShowProduct = () => {
         }
     };
 
-    const handleSale = async (id) => {
+    const handleSale = async (id, quantity) => {
         try {
-            const quantity = 1; // Cantidad a reducir
             const response = await axios.put(`${endpoint}/productos/${id}/reduce-stock`, { quantity });
-            toast.success('Stock actualizado con éxito');
+            if (response.data.success) {
+                if (response.data.message === 'Stock es bajo') {
+                    toast.warning(`El stock del producto ${id} es bajo!`);
+                } else {
+                    toast.success('Stock reducido con éxito');
+                }
+            }
             getAllProducts(); // Actualiza la lista de productos
         } catch (error) {
             console.error('Error updating stock:', error);
-            toast.error('Error al actualizar el stock');
+            toast.error('Error al reducir el stock');
         }
     };
 
@@ -68,12 +74,14 @@ const ShowProduct = () => {
                             <td>
                                 <Link to={`/edit/${product.id}`} className='btn btn-primary'>Edit</Link>
                                 <button onClick={() => deleteProduct(product.id)} className='btn btn-danger'>Delete</button>
-                                <button onClick={() => handleSale(product.id)} className='btn btn-warning'>Vender</button>
+                                <button onClick={() => handleSale(product.id, 1)} className='btn btn-warning'>Vender</button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
+            <ToastContainer /> {/* Añade el contenedor de notificaciones */}
         </div>
     );
 };

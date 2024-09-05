@@ -118,25 +118,13 @@ class ProductController extends Controller
     }
 
     public function reduceStock(Request $request, $id)
-    {
-        // Encuentra el producto por ID
-        $product = Product::findOrFail($id);
+{
+    $product = Product::findOrFail($id);
+    $quantity = $request->input('quantity');
 
-        // Obtén la cantidad a reducir del stock, por defecto 1
-        $quantity = $request->input('quantity', 1);
-
-        // Verifica si el stock es suficiente
-        if ($product->stock >= $quantity) {
-            // Reduce el stock
-            $product->stock -= $quantity;
-            $product->save();
-
-            // Opcional: Aquí puedes integrar la lógica para enviar notificaciones al sistema externo
-
-            return response()->json(['success' => true, 'message' => 'Stock reducido con éxito']);
-        } else {
-            return response()->json(['success' => false, 'message' => 'Stock insuficiente'], 400);
-        }
+    if ($quantity > $product->stock) {
+        return response()->json(['message' => 'Insufficient stock'], 400);
+    }
 
     $product->stock -= $quantity;
     $product->save();

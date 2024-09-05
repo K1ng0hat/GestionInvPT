@@ -12,5 +12,7 @@ La documentación se encuentra en SWAGGER.json y para visualizarla puede ingresa
 
 Se trabajo sobre una sola rama debido a que es un proyecto individual pero se presento un problema al momento de hacer la subida de el repositorio debido a que la carpeta de "reactFront" contenía una carpeta .git que no se podia visualizar.
 
+Actualizacion: la notificación despues en la vista de administrador una vez el stock esta en 0 no permite reducir, en la vista de usuario no permite comprar.
+
 
 
